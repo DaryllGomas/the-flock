@@ -1,0 +1,12 @@
+# The Flock: a static site served by Cloudflare Workers (assets only, no server code, no database).
+# Build site/data first (site/build.sh), then deploy with scripts/deploy.sh.
+name = "the-flock"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+routes = [
+  { pattern = "flock.bigpicsolutions.com", custom_domain = true }
+]
+
+[assets]
+directory = "site"

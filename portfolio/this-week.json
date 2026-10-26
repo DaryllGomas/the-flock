@@ -1,0 +1,13 @@
+{
+ "_about": "The plain-language 'This week' card. Rewritten with each Running Thesis version; the numbers come from thesis/view.json.",
+ "as_of": "2026-10-23",
+ "title": "AI leaders are weakening while the rest of the market holds.",
+ "lead": "About a coin flip that the market ends Dec 11 a little higher than today.",
+ "detail": "49% chance SPY (an index fund of the 500 biggest US companies) closes above 765 on Dec 11. It closed at 759.97 on Oct 23.",
+ "paths": [
+  {"name": "Dip, then relief", "p": 42, "plain": "Falls to 700-740, then recovers"},
+  {"name": "No deep dip", "p": 42, "plain": "Holds above 740"},
+  {"name": "Breakdown", "p": 16, "plain": "Falls below 700"}
+ ],
+ "footnote": "Three possible paths, not predictions guaranteed to happen."
+}

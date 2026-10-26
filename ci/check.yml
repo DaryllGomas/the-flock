@@ -1,0 +1,31 @@
+# CI for this repo. To turn it on, move this file to .github/workflows/check.yml (pushing workflow files
+# needs a GitHub token with the workflow scope).
+name: check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Portfolio is within the rules
+        run: python3 scripts/check.py
+
+      - name: Theses follow the template
+        run: python3 scripts/check_theses.py
+
+      - name: Calls are well formed
+        run: python3 scripts/score.py --check

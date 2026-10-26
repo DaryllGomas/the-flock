@@ -1,0 +1,51 @@
+/* Dark theme, parked 2026-10-25: the approved design is light. Not linked from index.html.
+   To bring it back, append these blocks to style.css. */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0D1B38;
+    --card: #14264A;
+    --ink: #F6F1E4;
+    --ink-2: #CBD3E1;
+    --ink-3: #A5B1C6;
+    --line: rgba(255, 255, 255, .10);
+    --card-line: rgba(255, 255, 255, .10);
+    --panel: #102042;
+    --panel-line: rgba(255, 255, 255, .10);
+    --soft: #112243;
+    --band: #12294A;
+    --band-line: rgba(153, 191, 195, .25);
+    --pill-bg: rgba(153, 191, 195, .16);
+    --pill-line: rgba(153, 191, 195, .35);
+    --note-bg: rgba(233, 183, 107, .14);
+    --note-line: rgba(233, 183, 107, .35);
+    --note-ink: #F0D9A8;
+    --teal: #9CD0D6;
+    --kicker: #9CC3DD;
+    --focus: #E9B76B;
+    --btn-bg: #F6F1E4;
+    --btn-ink: #0D1B38;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 28px -14px rgba(0, 0, 0, .55);
+    --path-a: #7FB1D3;
+    --path-b: #E9B76B;
+    --path-c: #D98C7D;
+    --gull: #9DB8D0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .sky {
+    background:
+      linear-gradient(180deg,
+        #0E1D3C 0%, #16284B 24%, #2A3A5C 46%, #6F5F6B 66%, #B98A5E 80%, #3F5A73 92%, #2C4A64 100%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .sun { background: radial-gradient(circle, #FFE9B8 0, rgba(246, 201, 126, .85) 28%, rgba(240, 180, 100, .3) 50%, rgba(240, 170, 90, 0) 70%); }
+  .sub { text-shadow: 0 1px 10px rgba(13, 27, 56, .95), 0 0 2px rgba(13, 27, 56, .6); }
+}
+
+@media (prefers-color-scheme: dark) { .hills { fill: rgba(20, 38, 74, .55); } }
+
+@media (prefers-color-scheme: dark) { .more-link { color: #9CC9E8; } }

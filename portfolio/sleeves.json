@@ -1,0 +1,174 @@
+{
+ "_about": "The Flock Portfolio v0 (2026-10-25). One portfolio, the same for everyone, built from the research. Each sleeve maps a research view to one plain, liquid vehicle. scripts/build_portfolio.py turns conviction tiers into weights. Not investment advice.",
+ "tier_weight": {
+  "high": 10,
+  "medium-high": 7,
+  "medium": 5,
+  "watch": 0,
+  "avoid": 0
+ },
+ "single_stock_factor": 0.5,
+ "satellites_max": 35,
+ "regime_sleeve": {
+  "vehicle": "SGOV",
+  "name": "Short-term Treasury bills",
+  "sector": "cash",
+  "weight": 15,
+  "why": "The Running Thesis gives better-than-even odds of a dip before December (58% chance of a SPY close at or below 740 first), a December Fed hike is priced in, and credit spreads are widening. Part of the model waits in T-bills, earning interest.",
+  "rule": "Set by the Running Thesis: 15% while it gives 55% or better odds of a dip before its next horizon, 0% otherwise. When the dip arrives or the view changes, the T-bills move into the core and the change is logged.",
+  "line": "Earn interest while waiting for a possible dip.",
+  "source": "Running Thesis"
+ },
+ "core": {
+  "vehicle": "VTI",
+  "name": "Whole US stock market",
+  "sector": "broad",
+  "why": "Most of the portfolio is simply the whole market: cheap, diversified, hard to get wrong. Everything else is a tilt on top.",
+  "line": "The foundation: own a little of the whole market.",
+  "risk": "It moves with the whole market, up and down. In a bad year it can fall 30% or more.",
+  "source": "The foundation of the portfolio, not a separate research call."
+ },
+ "sleeves": [
+  {
+   "id": "ai-infra",
+   "name": "AI chips and equipment",
+   "vehicle": "SMH",
+   "type": "etf",
+   "sector": "tech",
+   "tier": "high",
+   "source": "House view: AI Infrastructure (High) + Phase 1 to Phase 2 rotation (High)",
+   "why": "Companies are spending hundreds of billions a year on AI data centers; the suppliers get paid either way. Includes the memory makers (Memory super-cycle, Medium-High), so memory isn't counted twice.",
+   "risk": "AI spending is being punished on earnings right now (the 'capex crack'). Chips can fall 30-40% inside a bull run.",
+   "line": "The chips and tools powering the AI buildout."
+  },
+  {
+   "id": "googl",
+   "name": "Alphabet",
+   "vehicle": "GOOGL",
+   "type": "stock",
+   "sector": "tech",
+   "tier": "high",
+   "market_cap_usd": 2000000000000,
+   "source": "House view: Alphabet (High, Tier 1)",
+   "why": "A cash-rich leader in search, cloud and AI, held at half weight because it is one company.",
+   "risk": "A large share of its cloud backlog comes from a few big customers, and one company can always disappoint.",
+   "line": "Search, cloud and a big stake in AI."
+  },
+  {
+   "id": "hard-assets",
+   "name": "Gold",
+   "vehicle": "IAU",
+   "type": "etf",
+   "sector": "gold",
+   "tier": "high",
+   "source": "House view: Hard Assets / Scarcity sleeve (High, Hedge)",
+   "why": "If the AI trade disappoints, gold tends not to move with it. It's insurance for the rest of the portfolio.",
+   "risk": "Gold earns no income and can go sideways for years.",
+   "line": "A cushion when markets get uneasy."
+  },
+  {
+   "id": "defense-space",
+   "name": "Defense and space",
+   "vehicle": "ITA",
+   "type": "etf",
+   "sector": "industrials",
+   "tier": "medium-high",
+   "source": "House view: Defense / Space (Medium-High)",
+   "why": "Record order backlogs and rising defense budgets.",
+   "risk": "Depends on government budgets; backlogs have started to dip at some of the biggest names.",
+   "line": "Long-term defense and aerospace demand."
+  },
+  {
+   "id": "nuclear-power",
+   "name": "Nuclear and power",
+   "vehicle": "NLR",
+   "type": "etf",
+   "sector": "energy-power",
+   "tier": "medium",
+   "source": "House view: Nuclear / AI Power Stack (Medium)",
+   "why": "AI data centers need power around the clock; nuclear is the steady source the big tech companies are signing up for.",
+   "risk": "Nuclear projects run late and over budget; much of the hope is already in the price.",
+   "line": "AI data centers need power around the clock."
+  },
+  {
+   "id": "healthcare",
+   "name": "Healthcare",
+   "vehicle": "XLV",
+   "type": "etf",
+   "sector": "healthcare",
+   "tier": "medium",
+   "source": "House view: Healthcare, 4 legs (Medium-Building)",
+   "why": "Weight-loss drugs, an ageing population and beaten-down prices in parts of the sector.",
+   "risk": "Drug-price politics can hit the whole sector at once.",
+   "line": "A balance to the tech-heavy holdings."
+  },
+  {
+   "id": "robotics",
+   "name": "Robots and automation",
+   "vehicle": "BOTZ",
+   "type": "etf",
+   "sector": "tech",
+   "tier": "medium",
+   "source": "House view: Robotics / Physical-AI (Medium)",
+   "why": "AI is moving from screens into machines: factories, warehouses, cars.",
+   "risk": "Early: no pure-play humanoid robot company is listed yet, and the theme is already popular.",
+   "line": "Machines that bring AI into the physical world."
+  },
+  {
+   "id": "bitcoin",
+   "name": "Bitcoin fund",
+   "vehicle": "IBIT",
+   "type": "etf",
+   "sector": "crypto",
+   "tier": "medium",
+   "source": "House view: Crypto (Medium) + the Running Thesis crypto rungs",
+   "why": "A small, fixed slice of the most established crypto asset, through a regulated fund.",
+   "risk": "It can halve in months. Kept small on purpose.",
+   "line": "A small, measured piece of a volatile asset."
+  },
+  {
+   "id": "software",
+   "name": "software",
+   "vehicle": null,
+   "type": "etf",
+   "sector": "tech",
+   "tier": "avoid",
+   "source": "House view: SaaSpocalypse / AI Disruption",
+   "why": "Not held: AI agents let companies build what they used to buy.",
+   "risk": ""
+  },
+  {
+   "id": "energy",
+   "name": "oil",
+   "vehicle": null,
+   "type": "etf",
+   "sector": "energy",
+   "tier": "avoid",
+   "source": "House view: Energy / Oil (avoid direct longs)",
+   "why": "Not held: the research avoids betting directly on oil.",
+   "risk": ""
+  },
+  {
+   "id": "quantum",
+   "name": "Quantum computing",
+   "vehicle": null,
+   "type": "etf",
+   "sector": "tech",
+   "tier": "watch",
+   "source": "House view: Quantum Computing (Monitor)",
+   "why": "On the watch list, not held yet.",
+   "risk": ""
+  },
+  {
+   "id": "critical-minerals",
+   "name": "Critical minerals",
+   "vehicle": null,
+   "type": "etf",
+   "sector": "materials",
+   "tier": "watch",
+   "source": "House view: Critical Minerals (Low-Medium, Watch)",
+   "why": "On the watch list, not held yet.",
+   "risk": ""
+  }
+ ]
+}

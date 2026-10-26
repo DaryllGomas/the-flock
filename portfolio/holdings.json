@@ -1,0 +1,177 @@
+{
+ "as_of": "2026-10-25",
+ "status": "v0, first version",
+ "note": "One portfolio, the same for everyone, built from the research. Paper only. Not advice.",
+ "holdings": [
+  {
+   "ticker": "VTI",
+   "type": "etf",
+   "sector": "broad",
+   "name": "Whole US stock market",
+   "weight": 0.51,
+   "tier": "core",
+   "line": "The foundation: own a little of the whole market.",
+   "why": "Most of the portfolio is simply the whole market: cheap, diversified, hard to get wrong. Everything else is a tilt on top.",
+   "risk": "It moves with the whole market, up and down. In a bad year it can fall 30% or more.",
+   "theses": [
+    "The foundation of the portfolio, not a separate research call."
+   ]
+  },
+  {
+   "ticker": "SMH",
+   "type": "etf",
+   "sector": "tech",
+   "name": "AI chips and equipment",
+   "weight": 0.07,
+   "market_cap_usd": null,
+   "tier": "high",
+   "line": "The chips and tools powering the AI buildout.",
+   "why": "Companies are spending hundreds of billions a year on AI data centers; the suppliers get paid either way. Includes the memory makers (Memory super-cycle, Medium-High), so memory isn't counted twice.",
+   "risk": "AI spending is being punished on earnings right now (the 'capex crack'). Chips can fall 30-40% inside a bull run.",
+   "theses": [
+    "House view: AI Infrastructure (High) + Phase 1 to Phase 2 rotation (High)"
+   ]
+  },
+  {
+   "ticker": "GOOGL",
+   "type": "stock",
+   "sector": "tech",
+   "name": "Alphabet",
+   "weight": 0.03,
+   "market_cap_usd": 2000000000000,
+   "tier": "high",
+   "line": "Search, cloud and a big stake in AI.",
+   "why": "A cash-rich leader in search, cloud and AI, held at half weight because it is one company.",
+   "risk": "A large share of its cloud backlog comes from a few big customers, and one company can always disappoint.",
+   "theses": [
+    "House view: Alphabet (High, Tier 1)"
+   ]
+  },
+  {
+   "ticker": "IAU",
+   "type": "etf",
+   "sector": "gold",
+   "name": "Gold",
+   "weight": 0.07,
+   "market_cap_usd": null,
+   "tier": "high",
+   "line": "A cushion when markets get uneasy.",
+   "why": "If the AI trade disappoints, gold tends not to move with it. It's insurance for the rest of the portfolio.",
+   "risk": "Gold earns no income and can go sideways for years.",
+   "theses": [
+    "House view: Hard Assets / Scarcity sleeve (High, Hedge)"
+   ]
+  },
+  {
+   "ticker": "ITA",
+   "type": "etf",
+   "sector": "industrials",
+   "name": "Defense and space",
+   "weight": 0.05,
+   "market_cap_usd": null,
+   "tier": "medium-high",
+   "line": "Long-term defense and aerospace demand.",
+   "why": "Record order backlogs and rising defense budgets.",
+   "risk": "Depends on government budgets; backlogs have started to dip at some of the biggest names.",
+   "theses": [
+    "House view: Defense / Space (Medium-High)"
+   ]
+  },
+  {
+   "ticker": "NLR",
+   "type": "etf",
+   "sector": "energy-power",
+   "name": "Nuclear and power",
+   "weight": 0.03,
+   "market_cap_usd": null,
+   "tier": "medium",
+   "line": "AI data centers need power around the clock.",
+   "why": "AI data centers need power around the clock; nuclear is the steady source the big tech companies are signing up for.",
+   "risk": "Nuclear projects run late and over budget; much of the hope is already in the price.",
+   "theses": [
+    "House view: Nuclear / AI Power Stack (Medium)"
+   ]
+  },
+  {
+   "ticker": "XLV",
+   "type": "etf",
+   "sector": "healthcare",
+   "name": "Healthcare",
+   "weight": 0.03,
+   "market_cap_usd": null,
+   "tier": "medium",
+   "line": "A balance to the tech-heavy holdings.",
+   "why": "Weight-loss drugs, an ageing population and beaten-down prices in parts of the sector.",
+   "risk": "Drug-price politics can hit the whole sector at once.",
+   "theses": [
+    "House view: Healthcare, 4 legs (Medium-Building)"
+   ]
+  },
+  {
+   "ticker": "BOTZ",
+   "type": "etf",
+   "sector": "tech",
+   "name": "Robots and automation",
+   "weight": 0.03,
+   "market_cap_usd": null,
+   "tier": "medium",
+   "line": "Machines that bring AI into the physical world.",
+   "why": "AI is moving from screens into machines: factories, warehouses, cars.",
+   "risk": "Early: no pure-play humanoid robot company is listed yet, and the theme is already popular.",
+   "theses": [
+    "House view: Robotics / Physical-AI (Medium)"
+   ]
+  },
+  {
+   "ticker": "IBIT",
+   "type": "etf",
+   "sector": "crypto",
+   "name": "Bitcoin fund",
+   "weight": 0.03,
+   "market_cap_usd": null,
+   "tier": "medium",
+   "line": "A small, measured piece of a volatile asset.",
+   "why": "A small, fixed slice of the most established crypto asset, through a regulated fund.",
+   "risk": "It can halve in months. Kept small on purpose.",
+   "theses": [
+    "House view: Crypto (Medium) + the Running Thesis crypto rungs"
+   ]
+  },
+  {
+   "ticker": "SGOV",
+   "type": "etf",
+   "sector": "cash",
+   "name": "Short-term Treasury bills",
+   "weight": 0.15,
+   "tier": "regime",
+   "line": "Earn interest while waiting for a possible dip.",
+   "why": "The Running Thesis gives better-than-even odds of a dip before December (58% chance of a SPY close at or below 740 first), a December Fed hike is priced in, and credit spreads are widening. Part of the model waits in T-bills, earning interest.",
+   "risk": "Set by the Running Thesis: 15% while it gives 55% or better odds of a dip before its next horizon, 0% otherwise. When the dip arrives or the view changes, the T-bills move into the core and the change is logged.",
+   "theses": [
+    "Running Thesis"
+   ]
+  }
+ ],
+ "not_held": [
+  {
+   "name": "software",
+   "tier": "avoid",
+   "why": "Not held: AI agents let companies build what they used to buy."
+  },
+  {
+   "name": "oil",
+   "tier": "avoid",
+   "why": "Not held: the research avoids betting directly on oil."
+  },
+  {
+   "name": "Quantum computing",
+   "tier": "watch",
+   "why": "On the watch list, not held yet."
+  },
+  {
+   "name": "Critical minerals",
+   "tier": "watch",
+   "why": "On the watch list, not held yet."
+  }
+ ]
+}
