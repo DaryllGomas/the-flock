@@ -31,9 +31,10 @@ copy portfolio/LEDGER.md       ledger.md
 copy thesis/THESIS.md          THESIS.md
 copy docs/SCAM-SIGNS.md        scam-signs.md
 
-# Sanity: the JSON files must parse, or the page would show an error.
+# Sanity: the JSON files must parse strictly, or the page would show an error. Plain Python json accepts NaN and
+# Infinity (and a repeated key) that browsers reject or misread, so the check lives in scripts/check.py --json.
 for f in holdings changes this-week rules; do
-  python3 -c "import json,sys; json.load(open('data/$f.json'))" || { echo "build: data/$f.json is not valid JSON" >&2; exit 1; }
+  python3 ../scripts/check.py --json "data/$f.json" || { echo "build: data/$f.json is not strict JSON" >&2; exit 1; }
 done
 
 echo "built: $(ls data | tr '\n' ' ')"

@@ -21,7 +21,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Portfolio is within the rules
+      - name: Portfolio is within the rules, and holdings.json is what sleeves.json builds
         run: python3 scripts/check.py
 
       - name: Theses follow the template
@@ -29,3 +29,9 @@ jobs:
 
       - name: Calls are well formed
         run: python3 scripts/score.py --check
+
+      - name: Site data builds and is strict JSON
+        run: bash site/build.sh
+
+      - name: The checks still reject bad input
+        run: python3 scripts/test_checks.py

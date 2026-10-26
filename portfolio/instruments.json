@@ -1,0 +1,123 @@
+{
+ "_about": "The reviewed registry of every instrument the Flock may hold, keyed by ticker. scripts/check.py takes type, issuer, sector, bucket and the leverage flags from HERE, never from labels in holdings.json or sleeves.json. A ticker that is not listed cannot be held. Adding or changing a row needs a maintainer's review: market_cap_usd_min is a conservative lower bound (stocks only), gold must be true exactly when sector is gold, and leveraged or inverse funds are banned outright. Facts are public fund and company descriptions; not investment advice.",
+ "VTI": {
+  "name": "Vanguard Total Stock Market ETF",
+  "type": "etf",
+  "issuer": "Vanguard",
+  "sector": "broad",
+  "bucket": "core",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Tracks the whole US stock market. The core: it always gets what the other pieces leave."
+ },
+ "SGOV": {
+  "name": "iShares 0-3 Month Treasury Bond ETF",
+  "type": "etf",
+  "issuer": "iShares (BlackRock)",
+  "sector": "cash",
+  "bucket": "cash",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Holds US Treasury bills maturing in under three months. The waiting-cash (regime) instrument."
+ },
+ "SMH": {
+  "name": "VanEck Semiconductor ETF",
+  "type": "etf",
+  "issuer": "VanEck",
+  "sector": "tech",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Large US-listed semiconductor companies. Concentrated in a handful of names."
+ },
+ "GOOGL": {
+  "name": "Alphabet Inc. Class A",
+  "type": "stock",
+  "issuer": "Alphabet Inc.",
+  "sector": "tech",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": 1000000000000,
+  "notes": "Common stock of Alphabet Inc. Any other Alphabet share class must use the same issuer so the per-company cap covers both."
+ },
+ "IAU": {
+  "name": "iShares Gold Trust",
+  "type": "etf",
+  "issuer": "iShares (BlackRock)",
+  "sector": "gold",
+  "bucket": "tilt",
+  "gold": true,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Trust holding physical gold bullion. Counts toward the gold cap."
+ },
+ "ITA": {
+  "name": "iShares U.S. Aerospace & Defense ETF",
+  "type": "etf",
+  "issuer": "iShares (BlackRock)",
+  "sector": "industrials",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "US aerospace and defense companies."
+ },
+ "NLR": {
+  "name": "VanEck Uranium and Nuclear ETF",
+  "type": "etf",
+  "issuer": "VanEck",
+  "sector": "energy-power",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Uranium miners and nuclear-power companies."
+ },
+ "XLV": {
+  "name": "Health Care Select Sector SPDR Fund",
+  "type": "etf",
+  "issuer": "State Street (SPDR)",
+  "sector": "healthcare",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "The health care companies of the S&P 500."
+ },
+ "BOTZ": {
+  "name": "Global X Robotics & Artificial Intelligence ETF",
+  "type": "etf",
+  "issuer": "Global X",
+  "sector": "tech",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Global companies in robotics, automation and artificial intelligence."
+ },
+ "IBIT": {
+  "name": "iShares Bitcoin Trust ETF",
+  "type": "etf",
+  "issuer": "iShares (BlackRock)",
+  "sector": "crypto",
+  "bucket": "tilt",
+  "gold": false,
+  "leveraged": false,
+  "inverse": false,
+  "market_cap_usd_min": null,
+  "notes": "Spot bitcoin trust: holds bitcoin, no leverage."
+ }
+}

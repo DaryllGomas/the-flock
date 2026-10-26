@@ -5,10 +5,28 @@
   "max_weight_stock": 0.05,
   "max_weight_sector": 0.25,
   "max_weight_gold": 0.1,
+  "max_tilts": 0.35,
   "min_market_cap_usd": 10000000000,
   "allowed_types": [
     "stock",
     "etf"
+  ],
+  "allowed_sectors": [
+    "broad",
+    "cash",
+    "tech",
+    "communications",
+    "gold",
+    "industrials",
+    "energy-power",
+    "energy",
+    "healthcare",
+    "crypto",
+    "materials",
+    "financials",
+    "consumer",
+    "utilities",
+    "real-estate"
   ],
   "min_score": 0.5,
   "min_providers": 3,

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -74,7 +74,17 @@
 </header>
 
 <main id="main" class="wrap" tabindex="-1">
-  <noscript><p class="card notice">This page needs JavaScript to show the portfolio. It loads nothing from outside: only files from this site.</p></noscript>
+  <noscript>
+    <div class="card notice">
+      <p><strong>This page needs JavaScript to show the portfolio,</strong> but everything it shows is also plain files from this site that you can read directly:</p>
+      <ul class="plain">
+        <li><a href="data/holdings.json">The portfolio</a> (data/holdings.json)</li>
+        <li><a href="data/THESIS.md">The research</a> (data/THESIS.md)</li>
+        <li><a href="data/changes.json">The changes</a> (data/changes.json)</li>
+        <li><a href="data/scam-signs.md">How to spot a scam</a> (data/scam-signs.md)</li>
+      </ul>
+    </div>
+  </noscript>
 
   <!-- ============ PORTFOLIO (home) ============ -->
   <section id="tab-portfolio" class="tab" aria-label="Portfolio">
@@ -173,7 +183,7 @@
   <!-- ============ RESEARCH ============ -->
   <section id="tab-research" class="tab narrow" aria-label="Research" hidden>
     <h2 class="page-title serif">Research</h2>
-    <p class="muted lede page-lede">The house view behind the portfolio, in plain words first, then the full Running Thesis.</p>
+    <p class="muted lede page-lede">The house view behind the portfolio, in plain words first, then the full Running Thesis. The maintainers may hold some of the same funds or stocks; see <a href="#help">Help</a>.</p>
     <article class="card big" id="card-week-big" aria-labelledby="week-big-title">
       <div class="card-head slim">
         <h3 id="week-big-title" class="serif">This week: the market</h3>
@@ -221,13 +231,18 @@
 
     <article class="card" aria-labelledby="lines-h">
       <h3 id="lines-h" class="serif">The hard lines</h3>
-      <p class="muted lede">Four promises that don't bend for a vote, a sponsor or a good week.</p>
+      <p class="muted lede">Four promises that don't bend for a crowd, a sponsor or a good week.</p>
       <ol class="lines">
         <li><h4>No money, ever.</h4><p>The Flock never takes deposits, payments or donations to invest. It never trades for anyone and never links to a broker, exchange or wallet. If someone says they speak for the Flock and asks you for money, that is a scam.</p></li>
         <li><h4>Research, not advice.</h4><p>The portfolio is a paper model, the same for every reader. It knows nothing about your situation, and nothing here says what you should buy or sell. Results will be shown honestly, losses included, next to a plain index fund (VTI), even when the fund wins.</p></li>
         <li><h4>Public information only.</h4><p>Built on public information: filings, earnings calls, government data, published research and news. No private tips, ever. Contributions must link the public sources they use.</p></li>
-        <li><h4>Built so it can't be pumped.</h4><p>Fixed rules set the weights, not opinions or popularity. Only large, liquid holdings: no penny stocks, memecoins, leverage, shorting or single-name options. Changes happen only when the research changes, and every one is logged with the reason.</p></li>
+        <li><h4>Built to resist hype.</h4><p>Fixed rules set the weights, never popularity. Only large, liquid holdings: no penny stocks, memecoins, leverage, shorting or single-name options. Changes happen only when the research changes, and every one is logged with the reason.</p></li>
       </ol>
+    </article>
+
+    <article class="card" aria-labelledby="conflicts-h">
+      <h3 id="conflicts-h" class="serif">Conflicts, in plain words</h3>
+      <p class="conflicts">The maintainers also use this research for their own investing and may hold some of the same funds or stocks. A maintainer doesn't trade a name in the 3 trading days before or after a portfolio change in that name is published.</p>
     </article>
 
     <article class="card prose-card" aria-labelledby="scam-h">

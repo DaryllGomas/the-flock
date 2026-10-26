@@ -12,7 +12,8 @@
 :root {
   --navy: #0D1B38;
   --cream: #FAF6ED;
-  --blue: #397DAF;
+  --blue: #2F6E9F; /* 5.36:1 on #FFFDF8; white bar labels have 5.45:1 contrast */
+  --blue-mark: #397DAF; /* the logo only: decoration, no text on it */
   --gold: #E9B76B;
   --mist: #99BFC3;
   --coral: #C9796B;
@@ -99,6 +100,13 @@ main:focus { outline: none; }
 .teal { color: var(--teal); }
 .num, .amount, .legend b, .w, .bar3 span, .path-bar span { font-variant-numeric: tabular-nums lining-nums; }
 .loading { color: var(--ink-3); font-size: .9rem; padding: 6px 0; }
+.no-js .loading { display: none; } /* without JavaScript nothing is loading; app.js removes the class when it runs */
+/* Cards that are only filled in by script would sit there empty; the notice above them points to the plain files instead. */
+.no-js .pf, .no-js #card-changed, .no-js #card-week, .no-js .card:has(#avoid-list) { display: none; }
+.fail {
+  padding: 10px 12px; border-radius: 10px; font-size: .875rem; line-height: 1.45;
+  background: var(--panel); border: 1px solid var(--panel-line); color: var(--ink-2);
+}
 
 /* ------------------------------------------------------------------ sunrise header */
 .sky {
@@ -140,7 +148,7 @@ main:focus { outline: none; }
   font-family: var(--serif); font-weight: 600; font-size: 1.5rem; letter-spacing: .11em; line-height: 1;
   padding-top: 3px;
 }
-.mark .m-blue { fill: var(--blue); }
+.mark .m-blue { fill: var(--blue-mark); }
 .mark .m-gold { fill: var(--gold); }
 .topnav, .promise { display: none; }
 
@@ -349,6 +357,8 @@ main { padding-top: 0; margin-top: -16px; position: relative; }
 /* ------------------------------------------------------------------ sub-pages (Research, Changes, Help) */
 .page-title { font-size: 1.9rem; line-height: 1.1; margin: 22px 0 0; }
 .page-lede { margin: 8px 0 18px; font-size: 1rem; max-width: 60ch; }
+.page-lede a { color: var(--blue); text-underline-offset: 3px; }
+.conflicts { margin-top: 8px; font-size: .95rem; line-height: 1.55; color: var(--ink-2); max-width: 70ch; }
 .tab.narrow .card { margin-bottom: 16px; }
 .card.big { padding: 22px 20px; }
 .card.big .card-head.slim h3 { font-size: 1.5rem; }
@@ -418,6 +428,9 @@ main { padding-top: 0; margin-top: -16px; position: relative; }
 .prose .ledger-note { color: var(--ink-3); }
 .prose-card h3.serif { font-size: 1.4rem; }
 .notice { padding: 14px 16px; margin: 16px 0; }
+.notice p { font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
+.notice .plain { margin-top: 10px; padding-left: 4px; }
+.notice a { color: var(--blue); font-weight: 600; text-underline-offset: 3px; }
 
 /* ------------------------------------------------------------------ phone tab bar */
 .tabbar {

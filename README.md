@@ -39,14 +39,14 @@ platform or a "teacher". The Flock is the opposite, built on purpose:
 | Path | What |
 |---|---|
 | [`site/`](site/) | The public page (Portfolio, Research, Changes, Help): plain files, no outside requests, no trackers |
-| [`portfolio/`](portfolio/) | `sleeves.json` (research to holdings), `holdings.json` (built), `rules.json`, `changes.json`, `LEDGER.md` |
+| [`portfolio/`](portfolio/) | `sleeves.json` (research to holdings), `holdings.json` (built), `instruments.json` (reviewed funds and stocks), `rules.json`, `changes.json`, `LEDGER.md` |
 | [`thesis/`](thesis/) | The Running Thesis: the market view, open calls and the track record |
-| [`docs/CHARTER.md`](docs/CHARTER.md) | The hard lines: no money, no advice, public information only, built so it can't be pumped |
+| [`docs/CHARTER.md`](docs/CHARTER.md) | The hard lines: no money, no advice, public information only, built to resist hype |
 | [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) | How research becomes weights, step by step |
 | [`docs/SWARM.md`](docs/SWARM.md), [`docs/SEED-ISSUES.md`](docs/SEED-ISSUES.md) | How this plugs into Swarm AI, and the first tasks |
 | [`docs/SCAM-SIGNS.md`](docs/SCAM-SIGNS.md) | How the DM "investment group" scam works, for newcomers |
 | [`calls/`](calls/), [`research/theses/`](research/theses/) | Contributed calls and research, with templates |
-| [`scripts/`](scripts/) | `update.sh` (rebuild and check everything), `deploy.sh`, `build_portfolio.py`, `check.py`, `check_theses.py`, `score.py` |
+| [`scripts/`](scripts/) | `update.sh` (rebuild and check everything), `deploy.sh`, `build_portfolio.py`, `check.py`, `test_checks.py`, `check_theses.py`, `score.py` |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md), [`AGENTS.md`](AGENTS.md) | How people and AI agents take part |
 
 ## Run it locally
