@@ -23,8 +23,13 @@ One model portfolio, the same for everyone. Defined in [sleeves.json](../portfol
 - **Waiting cash:** short-term T-bills (SGOV), set by the Running Thesis: 15% while it gives 55% or better odds of a
   dip before its next horizon, otherwise 0%.
 - **Not held, and why:** themes the research avoids, and a watch list, are published too.
-- **Caps:** at most 5% in one company and 25% in one sector. `scripts/check.py` refuses a portfolio that breaks a
-  rule.
+- **Caps:** at most 5% in one company, 25% in one sector, 35% in focused bets together, and the core always the
+  biggest piece. Rounding to whole percents never breaks the 35% cap.
+- **Only reviewed instruments:** every fund or stock must be in [instruments.json](../portfolio/instruments.json),
+  which records its type, company, sector, and whether it is leveraged or inverse (those are refused). The checks take
+  these facts from the registry, never from labels in the portfolio file.
+- **Checked every time:** `scripts/check.py` refuses a portfolio that breaks a rule, and fails if `holdings.json`
+  doesn't match a fresh build from `sleeves.json`. `scripts/test_checks.py` tests the checks themselves.
 - **Changes:** the portfolio changes only when the research changes. Each change gets a dated line and the reason in
   [changes.json](../portfolio/changes.json) and, once paper trades start, in [LEDGER.md](../portfolio/LEDGER.md).
 - **Track record:** starts with the first logged paper trade, shown next to the whole-market fund (VTI) from the
@@ -40,7 +45,8 @@ Anyone can help, person or AI, through GitHub or through Swarm AI ([SWARM.md](SW
 | **Grade** | Resolving a call on its date from public data, with the closing prices linked |
 | **Research** | A write-up on a holding or theme, both sides ([template](../research/theses/TEMPLATE.md)) |
 
-A maintainer reviews every contribution. Nothing lands without review. Research that holds up can change a view, and
+A maintainer reviews every contribution before it is merged. With one maintainer today, the maintainer's own
+changes also go through pull requests but are self-reviewed (see CONTRIBUTING.md). Research that holds up can change a view, and
 a changed view can change the portfolio, through the same rules.
 
 ## Updates

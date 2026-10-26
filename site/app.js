@@ -4,6 +4,10 @@
 (() => {
   'use strict';
 
+  // The page works as plain HTML without this script; the class lets the stylesheet hide the
+  // "Loading…" placeholders for visitors who run no JavaScript.
+  document.documentElement.classList.remove('no-js');
+
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const TABS = ['portfolio', 'research', 'changes', 'help'];
   const TITLES = {
@@ -14,8 +18,8 @@
   };
   const BUCKET_LABEL = { core: 'Core', tilt: 'Tilts', bills: 'T-bills' };
   const BUCKET_CHIP = { core: 'Core', tilt: 'Tilt', bills: 'T-bills' };
-  // The only outbound link the page may ever contain.
-  const SWARM = /^https:\/\/swarm\.bigpicsolutions\.com(\/[^\s]*)?$/;
+  const REQUEST_TIMEOUT_MS = 8000; // one stalled file must not hold up the rest of the page
+  const FAIL_TEXT = "Couldn't load this part. Try again later.";
 
   const $ = (id) => document.getElementById(id);
 
@@ -75,20 +79,29 @@
     if (list.length <= 1) return list.join('');
     return list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
   }
-  async function getJSON(path) {
-    const r = await fetch(path, { cache: 'no-cache' });
-    if (!r.ok) throw new Error(path + ' ' + r.status);
-    return r.json();
+  // One request, one timeout. The timer also covers reading the body, so a stalled download aborts too.
+  async function load(path, kind) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      const r = await fetch(path, { cache: 'no-cache', signal: ctl.signal });
+      if (!r.ok) throw new Error(path + ' ' + r.status);
+      return await (kind === 'json' ? r.json() : r.text());
+    } finally {
+      clearTimeout(timer);
+    }
   }
-  async function getText(path) {
-    const r = await fetch(path, { cache: 'no-cache' });
-    if (!r.ok) throw new Error(path + ' ' + r.status);
-    return r.text();
-  }
-  function failed(container, what) {
-    const p = el('p', 'loading', `We couldn't load ${what} just now. Please refresh the page.`);
-    p.setAttribute('role', 'alert');
-    clear(container).append(p);
+  // A calm per-section message in place of the "Loading…" line; the rest of the page is untouched.
+  function failed(container) {
+    const p = el(container.tagName === 'P' ? 'span' : 'p', 'fail', FAIL_TEXT);
+    p.setAttribute('role', 'status');
+    if (container.tagName === 'UL' || container.tagName === 'OL') {
+      const li = el('li');
+      li.append(p);
+      clear(container).append(li);
+    } else {
+      clear(container).append(p);
+    }
   }
 
   /* ---------------------------------------------------------------- tabs (hash routing) */
@@ -176,7 +189,7 @@
     return li;
   }
 
-  function renderPortfolio(hold, rules) {
+  function renderPortfolio(hold) {
     const list = (hold.holdings || []).map((h, i) => ({ h, i }));
     list.sort((a, b) => (b.h.weight - a.h.weight) || (a.i - b.i));
     const rows = list.map((x) => x.h);
@@ -188,10 +201,7 @@
       sums[bucketOf(h)] += h.weight;
       total += h.weight;
     }
-    const notional = rules && rules.notional_usd ? rules.notional_usd : 100000;
-
     $('pf-draft').textContent = draftLabel(hold);
-    $('pf-amount').textContent = money(notional);
     $('pf-sub').textContent = `Starting paper model · ${n} holding${n === 1 ? '' : 's'}`;
     $('pf-count').textContent = `All ${n} holdings`;
 
@@ -393,13 +403,32 @@
   /* ---------------------------------------------------------------- safe markdown renderer
      Builds DOM nodes from text, so nothing is ever interpreted as HTML ("escape everything first"
      is true by construction). Supports headings, bold, italic, code, lists, quotes, tables, rules
-     and links; a link is only made for the one allowed address (Swarm AI), otherwise just its text. */
+     and links. A link becomes a real <a> only for an absolute https:// address;
+     any other address (javascript:, data:, http:, relative, //host, mailto: ...) is dropped and
+     only its text is kept.
+
+     Every loop below moves forward on every pass, and nesting is capped, so no input can hang the
+     page or blow the stack: the worst case is some text shown plainly. */
+  const MAX_DEPTH = 8; // nested quotes / lists / bold-in-italic
+  const MAX_INLINE = 20000; // longer runs of a single paragraph are shown as plain text
+
   const INLINE_SRC =
     '(`+)([^`]+?)\\1' + // 1,2 code
     '|\\*\\*(.+?)\\*\\*' + // 3 bold
-    '|\\[([^\\]]+)\\]\\(([^)\\s]+)\\)' + // 4,5 link
+    '|\\[([^\\]]+)\\]\\(((?:[^()\\s]|\\([^()\\s]*\\))+)\\)' + // 4,5 link (one level of () allowed in the address)
     '|(?<![\\w*])\\*(?![\\s*])(.+?)(?<![\\s*])\\*(?![\\w*])' + // 6 italic (*)
-    '|(?<!\\w)_(?![\\s_])(.+?)(?<![\\s_])_(?!\\w)'; // 7 italic (_)
+    '|(?<!\\w)_(?![\\s_])(.+?)(?<![\\s_])_(?!\\w)' + // 7 italic (_)
+    '|(?<![\\w@/])(https:\\/\\/(?:[^()\\s<>\\[\\]]|\\([^()\\s<>\\[\\]]*\\))+)'; // 8 bare https:// address
+
+  // Returns the normalised address when it is safe to link, otherwise null.
+  function safeHref(raw) {
+    if (typeof raw !== 'string' || raw.length > 2000) return null;
+    if (!/^https:\/\/[^\s/?#@\\]/i.test(raw) || /[\s\\\u0000-\u001f\u007f]/.test(raw)) return null;
+    let u;
+    try { u = new URL(raw); } catch (e) { return null; }
+    if (u.protocol !== 'https:' || u.username || u.password) return null; // no user:pass@host tricks
+    return u.href;
+  }
 
   function appendText(parent, s) {
     const parts = s.split('\n');
@@ -408,33 +437,63 @@
       if (part) parent.append(part);
     });
   }
-  function inline(text, parent) {
+  function makeLink(href, parent) {
+    const a = document.createElement('a');
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.referrerPolicy = 'no-referrer';
+    parent.append(a);
+    return a;
+  }
+  // inLink: already inside a link, so no second link may be made in it
+  function inline(text, parent, depth, inLink) {
+    depth = depth || 0;
+    if (depth > MAX_DEPTH || text.length > MAX_INLINE) { appendText(parent, text); return; }
     const re = new RegExp(INLINE_SRC, 'g');
     let last = 0;
     let m;
     while ((m = re.exec(text))) {
+      if (re.lastIndex <= last) {
+        appendText(parent, text.charAt(last));
+        re.lastIndex = ++last;
+        continue;
+      }
       if (m.index > last) appendText(parent, text.slice(last, m.index));
       if (m[2] !== undefined) {
         parent.append(el('code', null, m[2]));
       } else if (m[3] !== undefined) {
         const s = document.createElement('strong');
-        inline(m[3], s);
+        inline(m[3], s, depth + 1, inLink);
         parent.append(s);
       } else if (m[4] !== undefined) {
-        if (SWARM.test(m[5])) {
-          const a = document.createElement('a');
-          a.href = m[5];
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-          inline(m[4], a);
-          parent.append(a);
+        const href = inLink ? null : safeHref(m[5]);
+        if (href) {
+          const a = makeLink(href, parent);
+          inline(m[4], a, depth + 1, true);
+          a.append(el('span', 'vh', ' (opens in a new tab)'));
         } else {
-          inline(m[4], parent);
+          // A rejected destination must not turn a URL in its label into a link either.
+          inline(m[4], parent, depth + 1, true);
         }
       } else if (m[6] !== undefined || m[7] !== undefined) {
         const e = document.createElement('em');
-        inline(m[6] !== undefined ? m[6] : m[7], e);
+        inline(m[6] !== undefined ? m[6] : m[7], e, depth + 1, inLink);
         parent.append(e);
+      } else if (m[8] !== undefined) {
+        // A bare address is trimmed of trailing punctuation ("see https://x.org/a.") and linked only when safe.
+        let end = m[8].length;
+        while (end > 0 && '.,;:!?\'"*_'.includes(m[8].charAt(end - 1))) end--;
+        const url = m[8].slice(0, end);
+        re.lastIndex = m.index + end;
+        const href = inLink ? null : safeHref(url);
+        if (href) {
+          const a = makeLink(href, parent);
+          a.append(url);
+          a.append(el('span', 'vh', ' (opens in a new tab)'));
+        } else {
+          appendText(parent, url);
+        }
       }
       last = re.lastIndex;
     }
@@ -450,9 +509,19 @@
       .split('|')
       .map((c) => c.replace(/\u0001/g, '|').trim());
   }
-  const isBlank = (s) => /^\s*$/.test(s);
-  const isTableSep = (s) => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(s) && s.includes('-');
-  const isHr = (s) => /^\s*([-*_])(\s*\1){2,}\s*$/.test(s);
+  // Line tests. None of them can backtrack badly, so a very long line stays fast.
+  const isBlank = (s) => s.trim() === '';
+  const isTableSep = (s) => {
+    let t = s.trim();
+    if (!t.includes('-')) return false;
+    if (t.startsWith('|')) t = t.slice(1);
+    if (t.endsWith('|')) t = t.slice(0, -1);
+    return t.split('|').every((c) => /^:?-{3,}:?$/.test(c.trim()));
+  };
+  const isHr = (s) => {
+    const t = s.replace(/\s+/g, '');
+    return t.length >= 3 && /^(?:-+|\*+|_+)$/.test(t);
+  };
   const isHeading = (s) => /^#{1,6}\s+\S/.test(s);
   const isQuote = (s) => /^\s*>/.test(s);
   const isUl = (s) => /^\s*[-*+]\s+\S/.test(s);
@@ -460,23 +529,69 @@
   const isTableStart = (lines, i) => /^\s*\|/.test(lines[i]) && i + 1 < lines.length && isTableSep(lines[i + 1]);
   const startsBlock = (lines, i) =>
     isBlank(lines[i]) || isHeading(lines[i]) || isHr(lines[i]) || isQuote(lines[i]) || isUl(lines[i]) || isOl(lines[i]) || isTableStart(lines, i);
+  // Width of the leading whitespace (tabs are already turned into spaces by md()).
+  const indentOf = (s) => s.length - s.trimStart().length;
+
+  // Removes <!-- ... --> in one linear pass; an unclosed "<!--" is left as ordinary text.
+  function stripComments(s) {
+    let out = '';
+    let pos = 0;
+    for (;;) {
+      const a = s.indexOf('<!--', pos);
+      if (a === -1) break;
+      const b = s.indexOf('-->', a + 4);
+      if (b === -1) break;
+      out += s.slice(pos, a);
+      pos = b + 3;
+    }
+    return out + s.slice(pos);
+  }
+
+  function paragraphOf(text) {
+    const p = document.createElement('p');
+    inline(text, p);
+    return p;
+  }
 
   function md(src, opts) {
     opts = opts || {};
+    const depth = opts.depth || 0;
     const frag = document.createDocumentFragment();
-    const lines = String(src).replace(/\r\n?/g, '\n').replace(/<!--[\s\S]*?-->/g, '').split('\n');
+    const text0 = stripComments(String(src).replace(/\r\n?/g, '\n'))
+      .replace(/^[ \t]+/gm, (ws) => ws.replace(/\t/g, '    ')); // tabs in leading whitespace count as 4 spaces
+    const lines = text0.split('\n');
+    if (depth > MAX_DEPTH) { // too deeply nested to be real content: show it plainly
+      const p = document.createElement('p');
+      appendText(p, text0.trim());
+      frag.append(p);
+      return frag;
+    }
+    const nest = { depth: depth + 1 };
     let skipH1 = !!opts.skipFirstH1;
     let i = 0;
+    let lastStart = -1;
     while (i < lines.length) {
+      // Forward-progress guard: a pass that consumed nothing (should be impossible) is treated as
+      // a plain paragraph line, so the loop can never spin.
+      if (i <= lastStart) {
+        if (!isBlank(lines[i])) frag.append(paragraphOf(lines[i].trim()));
+        i++;
+        continue;
+      }
+      lastStart = i;
+
       const line = lines[i];
       if (isBlank(line)) { i++; continue; }
 
-      let m;
-      if ((m = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line))) {
+      if (isHeading(line)) {
         i++;
+        const m = /^(#{1,6})\s+/.exec(line);
+        let content = line.slice(m[0].length).trim();
+        const closing = /\s#+$/.exec(content); // optional closing hashes: "## Title ##"
+        if (closing) content = content.slice(0, closing.index).trim();
         if (m[1].length === 1 && skipH1) { skipH1 = false; continue; }
         const h = document.createElement('h' + Math.min(6, m[1].length + 2));
-        inline(m[2], h);
+        inline(content, h);
         frag.append(h);
         continue;
       }
@@ -486,7 +601,7 @@
         const q = [];
         while (i < lines.length && isQuote(lines[i])) { q.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
         const bq = document.createElement('blockquote');
-        bq.append(md(q.join('\n')));
+        bq.append(md(q.join('\n'), nest));
         frag.append(bq);
         continue;
       }
@@ -518,21 +633,34 @@
       }
 
       if (isUl(line) || isOl(line)) {
+        // A list starts at the indentation of its first item (so a lone "  - item" is fine). Items
+        // within 1 space of that indentation are siblings; lines indented 2 or more spaces further
+        // belong to the item above and are rendered again as nested content.
         const ordered = isOl(line);
-        const list = document.createElement(ordered ? 'ol' : 'ul');
+        const sameKind = ordered ? isOl : isUl;
         const marker = ordered ? /^\s*\d+[.)]\s+/ : /^\s*[-*+]\s+/;
-        while (i < lines.length && (ordered ? isOl(lines[i]) : isUl(lines[i])) && !/^\s{2,}/.test(lines[i])) {
+        const base = indentOf(line);
+        const isSibling = (k) => k < lines.length && sameKind(lines[k]) && indentOf(lines[k]) < base + 2;
+        const list = document.createElement(ordered ? 'ol' : 'ul');
+        while (isSibling(i)) {
+          const before = i;
           let text = lines[i].replace(marker, '');
           i++;
           const nested = [];
-          while (i < lines.length && /^\s{2,}\S/.test(lines[i])) { nested.push(lines[i].replace(/^\s{2}/, '')); i++; }
+          while (i < lines.length && !isBlank(lines[i]) && indentOf(lines[i]) >= base + 2) { nested.push(lines[i].slice(base + 2)); i++; }
           const li = document.createElement('li');
           while (nested.length && !isUl(nested[0]) && !isOl(nested[0])) text += ' ' + nested.shift().trim();
           inline(text, li);
-          if (nested.length) li.append(md(nested.join('\n')));
+          if (nested.length) li.append(md(nested.join('\n'), nest));
           list.append(li);
           // a single blank line between items keeps the same list going
-          if (i < lines.length && isBlank(lines[i]) && i + 1 < lines.length && (ordered ? isOl(lines[i + 1]) : isUl(lines[i + 1]))) i++;
+          if (i < lines.length && isBlank(lines[i]) && isSibling(i + 1)) i++;
+          if (i <= before) {
+            const fallback = el('li');
+            fallback.append(paragraphOf(lines[i]));
+            list.append(fallback);
+            i++;
+          }
         }
         frag.append(list);
         continue;
@@ -546,62 +674,46 @@
         text += (t.startsWith('**') ? '\n' : ' ') + t;
         i++;
       }
-      const p = document.createElement('p');
-      inline(text, p);
-      frag.append(p);
+      frag.append(paragraphOf(text));
     }
     return frag;
   }
 
-  /* ---------------------------------------------------------------- load everything */
-  async function init() {
-    const names = ['holdings', 'changes', 'week', 'rules', 'thesis', 'scam', 'ledger'];
-    const results = await Promise.allSettled([
-      getJSON('data/holdings.json'),
-      getJSON('data/changes.json'),
-      getJSON('data/this-week.json'),
-      getJSON('data/rules.json'),
-      getText('data/THESIS.md'),
-      getText('data/scam-signs.md'),
-      getText('data/ledger.md'),
-    ]);
-    const d = {};
-    results.forEach((r, i) => { d[names[i]] = r.status === 'fulfilled' ? r.value : null; });
-    const run = (fn, onFail) => {
-      try { fn(); } catch (e) { onFail(); }
-    };
+  /* ---------------------------------------------------------------- load everything
+     Every file is requested on its own, with its own timeout, and every section draws itself the
+     moment the file it needs arrives. A file that is missing, slow or broken only turns its own
+     section into a short, calm message; the rest of the page is unaffected. */
+  function section(deps, render, targets) {
+    const fail = () => targets.forEach((id) => failed($(id)));
+    Promise.all(deps).then((values) => {
+      try { render(...values); } catch (e) { fail(); }
+    }, fail);
+  }
 
-    if (d.holdings) {
-      run(() => renderPortfolio(d.holdings, d.rules), () => failed($('pf-rows'), 'the holdings'));
-      run(() => renderAvoid(d.holdings), () => failed($('avoid-list'), 'this list'));
-    } else {
-      failed($('pf-rows'), 'the holdings');
-      failed($('avoid-list'), 'this list');
-    }
-    renderTrack(d.rules);
+  function init() {
+    const holdings = load('data/holdings.json', 'json');
+    const changes = load('data/changes.json', 'json');
+    const week = load('data/this-week.json', 'json');
+    const rules = load('data/rules.json', 'json');
+    const thesis = load('data/THESIS.md', 'text');
+    const scam = load('data/scam-signs.md', 'text');
+    const ledger = load('data/ledger.md', 'text');
+    section([holdings], renderPortfolio, ['pf-rows']);
+    section([holdings], renderAvoid, ['avoid-list']);
+    section([rules], (r) => {
+      $('pf-amount').textContent = money(r.notional_usd || 100000);
+      renderTrack(r);
+    }, ['pf-amount', 'track-lede']);
 
-    if (d.changes) {
-      run(() => renderChanged(d.changes), () => failed($('changed-body'), 'the latest change'));
-      run(() => renderChangesTab(d.changes), () => failed($('changes-list'), 'the changes'));
-    } else {
-      failed($('changed-body'), 'the latest change');
-      failed($('changes-list'), 'the changes');
-    }
+    section([changes], renderChanged, ['changed-body']);
+    section([changes], renderChangesTab, ['changes-list']);
 
-    if (d.week) {
-      run(() => renderWeek(d.week, 'week-body', 'week-date', false), () => failed($('week-body'), 'this week'));
-      run(() => renderWeek(d.week, 'week-big-body', 'week-big-date', true), () => failed($('week-big-body'), 'this week'));
-    } else {
-      failed($('week-body'), 'this week');
-      failed($('week-big-body'), 'this week');
-    }
+    section([week], (w) => renderWeek(w, 'week-body', 'week-date', false), ['week-body']);
+    section([week], (w) => renderWeek(w, 'week-big-body', 'week-big-date', true), ['week-big-body']);
 
-    if (d.thesis != null) clear($('thesis-body')).append(md(d.thesis, { skipFirstH1: true }));
-    else failed($('thesis-body'), 'the research');
-    if (d.scam != null) clear($('scam-body')).append(md(d.scam, { skipFirstH1: true }));
-    else failed($('scam-body'), 'this page');
-    if (d.ledger != null) run(() => renderLedger(d.ledger), () => failed($('ledger-body'), 'the ledger'));
-    else failed($('ledger-body'), 'the ledger');
+    section([thesis], (t) => clear($('thesis-body')).append(md(t, { skipFirstH1: true })), ['thesis-body']);
+    section([scam], (t) => clear($('scam-body')).append(md(t, { skipFirstH1: true })), ['scam-body']);
+    section([ledger], renderLedger, ['ledger-body']);
   }
 
   init();

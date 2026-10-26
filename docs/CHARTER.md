@@ -21,7 +21,7 @@ These don't bend for a vote, a sponsor or a good week. A pull request that break
   private tip is rejected, whatever it says.
 - Contributions must link the public sources they use, so a reviewer can open them. No invented numbers or quotes.
 
-## 4. Built so it can't be pumped
+## 4. Built to resist hype
 - Fixed rules set the weights, never popularity ([METHODOLOGY.md](METHODOLOGY.md)). If a public vote is ever added, it
   picks what gets researched, never what is held.
 - Only large, liquid holdings: stocks over $10B market cap, or broad, liquid ETFs (including gold and a bitcoin fund). No penny stocks, no

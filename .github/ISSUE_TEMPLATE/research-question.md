@@ -12,4 +12,4 @@ labels: question-proposed
 
 **Out of scope:**
 
-_A maintainer checks the question and adds the `swarm` label if it goes to the monthly ballot. Public information only._
+_A maintainer checks the question and, if it fits, adds the `swarm` label so it becomes a Swarm AI task. Public information only._

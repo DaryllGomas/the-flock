@@ -23,7 +23,7 @@
   "vehicle": "VTI",
   "name": "Whole US stock market",
   "sector": "broad",
-  "why": "Most of the portfolio is simply the whole market: cheap, diversified, hard to get wrong. Everything else is a tilt on top.",
+  "why": "Most of the portfolio is simply the whole US market: cheap and widely diversified. Everything else is a smaller tilt on top.",
   "line": "The foundation: own a little of the whole market.",
   "risk": "It moves with the whole market, up and down. In a bad year it can fall 30% or more.",
   "source": "The foundation of the portfolio, not a separate research call."
@@ -62,9 +62,9 @@
    "sector": "gold",
    "tier": "high",
    "source": "House view: Hard Assets / Scarcity sleeve (High, Hedge)",
-   "why": "If the AI trade disappoints, gold tends not to move with it. It's insurance for the rest of the portfolio.",
-   "risk": "Gold earns no income and can go sideways for years.",
-   "line": "A cushion when markets get uneasy."
+   "why": "Gold has often held up when stocks fell, so it can soften losses elsewhere in the portfolio. Often, not always.",
+   "risk": "Gold earns no income, can go sideways for years, and can fall at the same time as stocks.",
+   "line": "A possible cushion when markets get uneasy."
   },
   {
    "id": "defense-space",
